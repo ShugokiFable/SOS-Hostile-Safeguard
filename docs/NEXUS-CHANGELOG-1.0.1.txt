@@ -1,0 +1,7 @@
+﻿1.0.1
+- Cover Weylin (Markarth market assassin) and similar unique false-friendlies with empty faction lists
+- New INI HostileNPCs EditorID list + SPID unique lines (MS01Weylin, MS13Arvel)
+- DLL 2.3.1
+
+1.0.0
+- Initial release (faction/keyword/very-aggressive exclusions + MCM perk patch)

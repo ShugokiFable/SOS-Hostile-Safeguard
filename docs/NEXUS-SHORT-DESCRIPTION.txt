@@ -1,0 +1,1 @@
+Improved Simple Offence Suppression fork so temporary "friendly" foes (toll bandits, Arvel, Weylin, quest neutrals) can be damaged and killed again, while real civilians stay protected.

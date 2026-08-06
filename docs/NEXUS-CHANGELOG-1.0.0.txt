@@ -1,0 +1,6 @@
+1.0.0
+- Initial release
+- Improved Simple Offence Suppression DLL (Hostile Safeguard): skip friend-style offence suppression for hostile-faction actors, exclusion keyword, and Very Aggressive / Frenzied
+- Light ESP: SOS_NoOffenceSuppression keyword, SOS_HostileFactionList, MCM Block Friendly Fire perk override
+- SPID _DISTR.ini tags common criminal/enemy factions with the exclusion keyword
+- Configurable HostileFactions EditorID list in po3_SimpleOffenceSuppression.ini

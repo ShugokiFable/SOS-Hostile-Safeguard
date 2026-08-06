@@ -1,0 +1,65 @@
+# Build / IDE
+**/build*/
+**/build-ae/
+**/out/
+**/.vs/
+**/.vscode/
+**/*.user
+**/*.suo
+**/*.VC.db
+**/CMakeCache.txt
+**/CMakeFiles/
+**/x64/
+# MSVC config dirs only (do NOT ignore repo /release/ ship tree — Windows is case-insensitive)
+**/build*/Release/
+**/build*/Debug/
+**/build-ae/Release/
+**/build-ae/Debug/
+**/*.obj
+**/*.pdb
+**/*.lib
+**/*.exp
+**/*.ilk
+
+# Vendored engine libs (document clone instead)
+**/extern/CommonLibSSE/
+**/extern/CommonLibVR/
+!**/extern/README.md
+
+# vcpkg / package caches
+**/vcpkg_installed/
+**/.vcpkg-root
+
+# Local workspace noise
+**/docs_local/
+**/_stage/
+**/meta.ini
+**/VERSION.txt
+**/STATE.md
+**/VALIDATION.md
+**/WORKSPACE_OWNERSHIP.md
+**/MEMORY/
+**/PLAN.md
+**/CURRENT.txt
+SOS Hostile Safeguard 1.0.0/
+SOS Hostile Safeguard 1.0.1/
+source/
+dist/
+*.zip
+!release/**/*
+
+# Secrets / OS
+.env
+*.log
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local promo screenshots at root
+ChatGPT*.png
+*.bbcode
+!docs/**/*.bbcode
+NEXUS-*.txt
+!docs/NEXUS-*.txt
+CHANGELOG.txt
+

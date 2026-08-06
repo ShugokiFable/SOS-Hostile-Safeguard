@@ -1,0 +1,133 @@
+[size=5][b]SOS Hostile Safeguard[/b][/size]
+[size=3][i]v1.0.0 — improved Simple Offence Suppression for temporary "friendly" foes[/i][/size]
+
+[size=4][b]What this fixes[/b][/size]
+
+[b]Simple Offence Suppression[/b] (and especially [b]SOS MCM – Block Friendly Fire[/b]) treats any NPC who is [b]not currently hostile[/b] as a protected friend when you hit them.
+
+That also catches many [b]enemies who are only calm for a moment[/b]:
+
+[list]
+[*]Toll / highway bandits after you pay
+[*]Arvel the Swift (dragon-claw thief who runs off)
+[*]Weylin (Markarth market Forsworn assassin vs Margret) — his base record has [b]zero factions[/b], so faction-only patches miss him
+[*]Other quest or modded "talk first" foes who sit in criminal / enemy factions but are not yet hostile
+[/list]
+
+Symptoms: surprise attacks do no damage, they never feel like real foes, and no amount of "just hit them harder" works while Block Friendly Fire is on.
+
+This package keeps the original purpose — [b]stray hits on real neutrals and civilians still do not start a war[/b] — but [b]excludes hostile-by-nature actors[/b] so you can kill them properly.
+
+[size=4][b]What this is[/b][/size]
+
+[b]Not a soft side-patch alone.[/b] It is:
+
+[list]
+[*][b]Replacement[/b] of powerofthree's [font=courier new]po3_SimpleOffenceSuppression.dll[/font] (same filename; improved fork with exclusions)
+[*][b]Addon plugin[/b] (light ESP) with keyword + formlist + a patch to the MCM friendly-fire perk
+[*][b]Optional SPID lines[/b] to tag common criminal/enemy factions with the exclusion keyword
+[/list]
+
+Disable the original Simple Offence Suppression [b]mod folder[/b] (or ensure this mod wins the DLL path). Keep [b]SOS MCM[/b] enabled.
+
+[size=4][b]How the safeguard works[/b][/size]
+
+Several layers so one framework cannot silently re-protect foes:
+
+[list]
+[*][b]DLL[/b] — when SOS would treat a Neutral as a Friend for hit-reaction, skip that for actors in configured hostile factions, with the exclusion keyword, or Very Aggressive / Frenzied (v1.1-style behaviour restored)
+[*][b]INI[/b] — [font=courier new]HostileFactions[/font] (faction EditorIDs) and [font=courier new]HostileNPCs[/font] (unique NPC base EditorIDs like [font=courier new]MS01Weylin[/font]); extend without recompiling
+[*][b]Keyword + FormList[/b] in the light ESP ([font=courier new]SOS_NoOffenceSuppression[/font], [font=courier new]SOS_HostileFactionList[/font]; formlist can also hold NPC bases)
+[*][b]SPID[/b] — tags bandits, warlocks, undead, forsworn, common WE packs, DLC hostiles, plus unique lines for Weylin/Arvel
+[*][b]MCM perk patch[/b] — Block Friendly Fire no longer multiplies damage by zero on keyword-tagged hostiles
+[/list]
+
+[size=4][b]Requirements[/b][/size]
+
+[b]Hard[/b]
+[list]
+[*]Skyrim Special Edition / AE with [b]SKSE64[/b]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/32444]Address Library for SKSE Plugins[/url]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/41774]Simple Offence Suppression MCM - Block Friendly Fire[/url] (master of the ESP; the perk this patches)
+[/list]
+
+[b]Strongly recommended[/b]
+[list]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/36869]Spell Perk Item Distributor (SPID)[/url] — loads the [font=courier new]_DISTR.ini[/font] keyword tags (needed for full MCM damage fix on tagged NPCs)
+[/list]
+
+[b]Replaced (do not run stock DLL beside this)[/b]
+[list]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/41764]Simple Offence Suppression[/url] by powerofthree — this package ships the improved DLL under the same name. Disable the original SOS mod so only this DLL loads.
+[/list]
+
+[size=4][b]Installation[/b][/size]
+
+[list=1]
+[*]Install with a mod manager (Vortex / MO2).
+[*][b]Disable[/b] the original Simple Offence Suppression (po3) mod folder.
+[*][b]Keep[/b] SOS MCM enabled.
+[*]Enable this mod. Plugin: [font=courier new]SOS Hostile Safeguard.esp[/font] (light / ESPFE).
+[*]Load [b]after[/b] SOS MCM.
+[*]Deploy / run the game through SKSE.
+[*]Optional check: SKSE log should mention Simple Offence Suppression with Hostile Safeguard exclusions active.
+[/list]
+
+[size=4][b]Configuration[/b][/size]
+
+[font=courier new]Data/SKSE/Plugins/po3_SimpleOffenceSuppression.ini[/font]
+
+[code]
+[Exclusions]
+ExcludeVeryAggressive = true
+UseKeywordExclusion = true
+ExclusionKeyword = SOS_NoOffenceSuppression
+ExclusionFormList = SOS_HostileFactionList
+HostileFactions = BanditFaction,BanditAllyFaction,...
+HostileNPCs = MS01Weylin,MS13Arvel,e3DemoArvel
+[/code]
+
+If a modded quest foe is still protected:
+[list]
+[*]Add a [b]faction[/b] EditorID to [font=courier new]HostileFactions[/font], and/or
+[*]Add the NPC [b]base[/b] EditorID to [font=courier new]HostileNPCs[/font] (required when the actor has no factions, like Weylin)
+[/list]
+Then restart the game.
+
+[size=4][b]Compatibility[/b][/size]
+
+[list]
+[*]Built for SKSE + Address Library (AE 1.6.x path; Address Library version-independent plugin metadata).
+[*]ESP is light-flagged; masters Skyrim + SOS MCM.
+[*]Does not edit original MCM scripts or redistribute unedited MCM files — only a reviewable perk override in this ESP.
+[*]Other SOS "tweaks" that only change the stock INI are unnecessary if you use this package's INI; do not run a second [font=courier new]po3_SimpleOffenceSuppression.dll[/font].
+[/list]
+
+[size=4][b]Known notes / testing honesty[/b][/size]
+
+[list]
+[*]Structural build and plugin packaging are validated; [b]please report in-game results[/b] for Arvel, toll bandits, and any stubborn quest neutrals.
+[*]True civilians, guards, and genuine allies remain protected by design.
+[*]SPID absence: DLL faction EditorID list still applies; MCM damage block may still zero damage until the keyword is present (install SPID or tag actors another way).
+[/list]
+
+[size=4][b]Uninstall[/b][/size]
+
+Remove this mod, re-enable stock Simple Offence Suppression if desired, keep or remove MCM as you like. No special clean save required for the SPID keyword layer (runtime only).
+
+[size=4][b]Permissions / source[/b][/size]
+
+Upstream Simple Offence Suppression is MIT and allows modification. This release ships a modified DLL and new addon files only — not a reupload of unedited third-party packages.
+
+[size=4][b]Credits[/b][/size]
+
+[list]
+[*][b]powerofthree[/b] — Simple Offence Suppression (original design, SKSE plugin, MIT source)
+[*][b]wankingSkeever[/b] (and collaborators) — Simple Offence Suppression MCM – Block Friendly Fire (perk behaviour this ESP patches; MCM itself remains their mod)
+[*][b]Ryan (SniffleMan) / CommonLibSSE lineage[/b] — library used by the upstream plugin family
+[*][b]Address Library[/b] — meh321
+[*][b]SPID[/b] — powerofthree (optional distributor for the keyword lines)
+[*]Hostile Safeguard fork / exclusions / packaging — this release
+[/list]
+
+[size=2]If something still refuses to take damage, name the NPC/mod, whether MCM Block Friendly Fire is on, and whether SPID loaded [font=courier new]SOS Hostile Safeguard_DISTR.ini[/font].[/size]
