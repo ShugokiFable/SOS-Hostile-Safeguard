@@ -1,0 +1,60 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    # windows-2022 on purpose: the CMake presets target the VS2022 generator.
+    runs-on: windows-2022
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: source-publish/SimpleOffenceSuppression
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Resolve vcpkg
+        shell: pwsh
+        working-directory: .
+        run: |
+          $root = $env:VCPKG_ROOT
+          if (-not $root) { $root = $env:VCPKG_INSTALLATION_ROOT }
+          if (-not $root) { $root = "C:\vcpkg" }
+          if (-not (Test-Path (Join-Path $root "scripts/buildsystems/vcpkg.cmake"))) {
+            throw "Could not locate vcpkg under $root"
+          }
+          "VCPKG_ROOT=$root" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Fetch CommonLib submodules
+        # The .gitmodules file lives inside source-publish/SimpleOffenceSuppression,
+        # so actions/checkout cannot resolve it from the repo root; clone manually.
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/powerof3/CommonLibSSE extern/CommonLibSSE
+          git clone --depth 1 https://github.com/alandtse/CommonLibVR extern/CommonLibVR
+
+      - name: Configure (AE preset)
+        run: cmake --preset vs2022-windows-vcpkg-ae
+
+      - name: Build
+        run: cmake --build build --config Release --parallel 2
+
+      - name: Verify DLL was produced
+        shell: pwsh
+        run: |
+          $dll = Get-ChildItem -Recurse -Filter *.dll build | Select-Object -First 1
+          if (-not $dll) { throw "Build produced no DLL." }
+          Write-Host "Built $($dll.FullName)"
