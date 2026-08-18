@@ -50,11 +50,12 @@ jobs:
         run: cmake --preset vs2022-windows-vcpkg-ae
 
       - name: Build
-        run: cmake --build build --config Release --parallel 2
+        # AE preset writes to buildae (CMakePresets.json), not build.
+        run: cmake --build buildae --config Release --parallel 2
 
       - name: Verify DLL was produced
         shell: pwsh
         run: |
-          $dll = Get-ChildItem -Recurse -Filter *.dll build | Select-Object -First 1
+          $dll = Get-ChildItem -Recurse -Filter *.dll buildae | Select-Object -First 1
           if (-not $dll) { throw "Build produced no DLL." }
           Write-Host "Built $($dll.FullName)"
