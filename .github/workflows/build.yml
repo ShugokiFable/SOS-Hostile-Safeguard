@@ -43,8 +43,8 @@ jobs:
         # so actions/checkout cannot resolve it from the repo root; clone manually.
         shell: pwsh
         run: |
-          git clone --depth 1 https://github.com/powerof3/CommonLibSSE extern/CommonLibSSE
-          git clone --depth 1 https://github.com/alandtse/CommonLibVR extern/CommonLibVR
+          git clone --depth 1 --branch master https://github.com/powerof3/CommonLibSSE extern/CommonLibSSE
+          git clone --depth 1 --branch master https://github.com/alandtse/CommonLibVR extern/CommonLibVR
 
       - name: Configure (AE preset)
         run: cmake --preset vs2022-windows-vcpkg-ae
