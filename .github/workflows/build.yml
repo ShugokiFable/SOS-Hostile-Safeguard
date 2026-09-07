@@ -43,7 +43,11 @@ jobs:
         # so actions/checkout cannot resolve it from the repo root; clone manually.
         shell: pwsh
         run: |
-          git clone --depth 1 https://github.com/powerof3/CommonLibSSE extern/CommonLibSSE
+          git clone --depth 1 --branch dev https://github.com/powerof3/CommonLibSSE extern/CommonLibSSE
+          # dev dropped include/REL (commonlib-shared migration, 2026-08-21); pin the
+          # last pre-migration snapshot the plugin source + CMake probe target.
+          git -C extern/CommonLibSSE fetch --depth 1 origin 86eb2b853101053390a81378b6263c2911603824
+          git -C extern/CommonLibSSE checkout --quiet 86eb2b853101053390a81378b6263c2911603824
           git clone --depth 1 https://github.com/alandtse/CommonLibVR extern/CommonLibVR
 
       - name: Configure (AE preset)
